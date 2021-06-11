@@ -1,0 +1,73 @@
+type Query {
+    node(id: ID!): Node
+    nodes(ids: [ID!]!): [Node]!
+    users(
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: UserOrder
+    ): UserConnection
+}
+
+input UserInput {
+    age: Int
+    name: String!
+    username: String!
+}
+
+type Mutation {
+    createUser(user: UserInput!): User!
+}
+
+type User implements Node @key(fields: "id") {
+    id: ID!
+    name: String!
+}
+
+type UserLog implements Node @key( fields: "id") {
+    id: ID!
+    create_at: Time
+    remark: String!
+    ip: String!
+}
+
+type UserConnection {
+    totalCount: Int!
+    pageInfo: PageInfo!
+    edges: [UserEdge]
+}
+
+type UserEdge {
+    node: User
+    cursor: Cursor!
+}
+
+enum OrderDirection {
+    ASC
+    DESC
+}
+
+enum UserOrderField {
+    NAME
+}
+
+input UserOrder {
+    direction: OrderDirection!
+    field: UserOrderField
+}
+
+scalar Cursor
+
+type PageInfo {
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+    startCursor: Cursor
+    endCursor: Cursor
+}
+
+interface Node {
+    id: ID!
+}
+
+scalar Time

@@ -1,0 +1,142 @@
+type Query {
+    roles(
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: RoleOrder
+    ): RoleConnection
+    permissions(
+        after: Cursor
+        first: Int
+        before: Cursor
+        last: Int
+        orderBy: PermissionOrder
+    ): PermissionConnection
+    userRoleDetail(userId: Int): User!
+}
+
+type Mutation {
+    createRole(role: RoleInput!): Role!
+    createPermission(permission: PermissionInput!): Permission!
+    createUserRole(userRole: UserRoleInput!): ID!
+    createRolePermission(rolePermission: RolePermissionInput!): Int
+}
+
+type Role implements Node @key(fields: "id"){
+    id: ID!
+    name: String!
+    remark: String
+}
+
+type UserRole implements Node @key(fields: "userId roleId") {
+    id: ID!
+    userId: Int!
+    roleId: Int!
+}
+
+type RoleDetail {
+    role: Role!
+    permissions: [Permission]
+}
+
+type UserRoleDetail {
+    id: ID!
+    user: User
+    roles: [RoleDetail]!
+}
+
+extend type User @key(fields: "id") {
+    id: ID! @external
+    roles: [RoleDetail]!
+}
+
+# permission
+
+type Permission implements Node @key(fields: "id"){
+    id: ID!
+    name: String!
+    code: String!
+    remark: String
+}
+
+input RoleInput {
+    name: String!
+    remark: String!
+}
+
+input UserRoleInput {
+    userId: Int!
+    roleId: Int!
+}
+
+input RolePermissionInput {
+    roleId: Int!
+    permissionId: Int!
+}
+
+type RoleConnection {
+    totalCount: Int!
+    pageInfo: PageInfo!
+    edges: [RoleEdge]
+}
+
+type RoleEdge {
+    node: Role
+    cursor: Cursor!
+}
+
+enum OrderDirection {
+    ASC
+    DESC
+}
+
+enum RoleOrderField {
+    NAME
+}
+
+input RoleOrder {
+    direction: OrderDirection!
+    field: RoleOrderField
+}
+
+input PermissionInput {
+    name: String!
+    code: String!
+    remark: String!
+}
+
+type PermissionConnection {
+    totalCount: Int!
+    pageInfo: PageInfo!
+    edges: [PermissionEdge]
+}
+
+type PermissionEdge {
+    node: Permission
+    cursor: Cursor!
+}
+
+enum PermissionOrderField {
+    NAME
+}
+
+input PermissionOrder {
+    direction: OrderDirection!
+    field: PermissionOrderField
+}
+
+scalar Cursor
+
+type PageInfo {
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+    startCursor: Cursor
+    endCursor: Cursor
+}
+
+interface Node {
+    id: ID!
+}
+
+scalar Time

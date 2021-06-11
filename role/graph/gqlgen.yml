@@ -1,0 +1,20 @@
+schema:
+  - role.graphql
+
+resolver:
+  layout: follow-schema
+  dir: .
+
+federation:
+  filename: federation.go
+
+autobind:
+  - role/ent
+
+models:
+  ID:
+    model:
+      - github.com/99designs/gqlgen/graphql.IntID
+  Node:
+    model:
+      - role/ent.Noder
