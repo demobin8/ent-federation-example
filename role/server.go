@@ -31,7 +31,7 @@ func main() {
 
 	client, err := ent.Open(
 		"mysql",
-		"vvlife-test:Vvlife@2019@tcp(172.16.6.162:6033)/vv_pay_test2?charset=utf8&parseTime=true",
+		"test:test@2019@tcp(172.16.6.162:6033)/test2?charset=utf8&parseTime=true",
 	)
 
 	if client == nil || err != nil {
